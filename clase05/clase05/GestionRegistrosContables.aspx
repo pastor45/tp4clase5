@@ -108,7 +108,6 @@
         <div class="container">
             <h1>Gestión de Registros Contables</h1>
                         <asp:Table ID="Table1" runat="server" Width="100%">
-            <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Menu.aspx">Menú</asp:HyperLink>
 
             <label for="TextBox1">Monto:</label>
             <asp:TextBox ID="TextBox1" placeholder="Monto" runat="server"></asp:TextBox>
