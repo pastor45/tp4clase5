@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace clase05
@@ -13,6 +14,10 @@ namespace clase05
             if (!IsPostBack)
             {
                 BindCuentasDropdown();
+               
+                    CargarDatos();
+
+                
             }
         }
 
@@ -101,13 +106,45 @@ namespace clase05
                 }
             }
         }
-
+        private void CargarDatos()
+        {
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["cadena"].ConnectionString))
+            {
+                conn.Open();
+                string query = "SELECT Cuentas.id, Cuentas.descripcion, RegistrosContables.monto, RegistrosContables.tipo FROM Cuentas INNER JOIN RegistrosContables ON Cuentas.id = RegistrosContables.idCuenta";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        GridView1.DataSource = dt;
+                        GridView1.DataBind();
+                    }
+                }
+            }
+        }
         private void ClearFields()
         {
             TextBox1.Text = string.Empty;
             RadioButtonList1.ClearSelection();
         }
+        protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                int tipo = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "tipo"));
 
+                if (tipo == 1)
+                {
+                    e.Row.Cells[3].Text = "Haber";
+                }
+                else
+                {
+                    e.Row.Cells[3].Text = "Debe";
+                }
+            }
+        }
         private void BindCuentasDropdown()
         {
             string connectionString = ConfigurationManager.ConnectionStrings["cadena"].ConnectionString;

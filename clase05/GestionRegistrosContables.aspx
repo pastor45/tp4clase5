@@ -11,14 +11,12 @@
         background-color: #f0f0f0;
         margin: 0;
         padding: 0;
-        display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
     }
 
     form {
-        max-width: 600px;
         padding: 20px;
         background-color: #fff;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -63,6 +61,8 @@
     .btn-container {
         text-align: center;
         margin-top: 20px;
+                margin-bottom: 20px;
+
     }
 
     .btn {
@@ -143,6 +143,20 @@
         </div>
         <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:cadena %>"
             SelectCommand="SELECT id, descripcion FROM Cuentas" />
+                    <div class="table-container">
+<asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CssClass="table" OnRowDataBound="GridView1_RowDataBound">
+    <Columns>
+        <asp:BoundField DataField="id" HeaderText="ID CUENTA" />
+        <asp:BoundField DataField="descripcion" HeaderText="Descripción" />
+        <asp:BoundField DataField="monto" HeaderText="Monto" />
+        <asp:TemplateField HeaderText="Tipo">
+            <ItemTemplate>
+                <%# Eval("tipo") %>
+            </ItemTemplate>
+        </asp:TemplateField>
+    </Columns>
+</asp:GridView>
+</div>
     </form>
 </body>
 </html>

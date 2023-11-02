@@ -16,33 +16,12 @@ namespace clase05
      
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                CargarDatos();
-
-            }
+           
 
 
         }
 
-        private void CargarDatos()
-        {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["cadena"].ConnectionString))
-            {
-                conn.Open();
-                string query = "SELECT Cuentas.id, Cuentas.descripcion, RegistrosContables.monto, RegistrosContables.tipo FROM Cuentas INNER JOIN RegistrosContables ON Cuentas.id = RegistrosContables.idCuenta";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                    {
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
-                        GridView1.DataSource = dt;
-                        GridView1.DataBind();
-                    }
-                }
-            }
-        }
+      
 
         protected void Button1_Click(object sender, EventArgs e)
         {
@@ -57,22 +36,7 @@ namespace clase05
                 Label1.Text = " No se agregaron registros";
             }
         }
-        protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                int tipo = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "tipo"));
-
-                if (tipo == 1)
-                {
-                    e.Row.Cells[3].Text = "Haber";
-                }
-                else
-                {
-                    e.Row.Cells[3].Text = "Debe";
-                }
-            }
-        }
+  
 
 
         protected void ListBox1_SelectedIndexChanged(object sender, EventArgs e)

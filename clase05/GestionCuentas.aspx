@@ -161,20 +161,7 @@
                 <asp:ControlParameter ControlID="ListBox1" Name="id" PropertyName="SelectedValue" Type="Int32" />
             </SelectParameters>
         </asp:SqlDataSource>
-            <div class="table-container">
-<asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CssClass="table" OnRowDataBound="GridView1_RowDataBound">
-    <Columns>
-        <asp:BoundField DataField="id" HeaderText="ID CUENTA" />
-        <asp:BoundField DataField="descripcion" HeaderText="Descripción" />
-        <asp:BoundField DataField="monto" HeaderText="Monto" />
-        <asp:TemplateField HeaderText="Tipo">
-            <ItemTemplate>
-                <%# Eval("tipo") %>
-            </ItemTemplate>
-        </asp:TemplateField>
-    </Columns>
-</asp:GridView>
-</div>
+ 
     </form>
    
 </body>
