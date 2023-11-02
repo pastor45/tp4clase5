@@ -1,5 +1,7 @@
 # tp4clase5
 
+Trabajo realizado en grupo por Agustin Verga Lobos y Pablo Salamendi
+
 Ejercicio cuentas contables:
 
 1)
