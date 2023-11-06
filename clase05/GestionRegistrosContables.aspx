@@ -121,7 +121,7 @@
         </div>
         <div class="input-container">
             <label for="TextBoxMonto">Monto:</label>
-            <asp:TextBox ID="TextBox1" runat="server" placeholder="Ingrese el monto"></asp:TextBox>
+            <asp:TextBox ID="TextBox1" runat="server" placeholder="Ingrese el monto" type="number" step="1"></asp:TextBox>
         </div>
         <div class="input-container">
             <label for="RadioButtonListTipo">Tipo:</label>
@@ -135,8 +135,6 @@
         </div>
         <div class="btn-container">
             <asp:Button ID="Button1" runat="server" Text="Crear" CssClass="btn btn-primary" OnClick="ButtonCrear_Click" />
-            <asp:Button ID="Button2" runat="server" Text="Actualizar" CssClass="btn btn-warning" OnClick="ButtonActualizar_Click" />
-            <asp:Button ID="Button3" runat="server" Text="Eliminar" CssClass="btn btn-danger" OnClick="ButtonEliminar_Click" />
         </div>
         <div class="message-container">
             <asp:Label ID="Label2" runat="server" CssClass="message"></asp:Label>
@@ -144,19 +142,22 @@
         <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:cadena %>"
             SelectCommand="SELECT id, descripcion FROM Cuentas" />
                     <div class="table-container">
-<asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CssClass="table" OnRowDataBound="GridView1_RowDataBound">
+<asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CssClass="table" OnRowDataBound="GridView1_RowDataBound" OnRowCommand="GridView1_RowCommand" DataKeyNames="RegistroID">
     <Columns>
-        <asp:BoundField DataField="id" HeaderText="ID CUENTA" />
+        <asp:BoundField DataField="RegistroID" HeaderText="ID Registro" />
+        <asp:BoundField DataField="CuentaID" HeaderText="ID Cuenta" />
         <asp:BoundField DataField="descripcion" HeaderText="Descripción" />
-        <asp:BoundField DataField="monto" HeaderText="Monto" />
+        <asp:BoundField DataField="monto" HeaderText="Monto" DataFormatString="{0:C}" />
         <asp:TemplateField HeaderText="Tipo">
             <ItemTemplate>
-                <%# Eval("tipo") %>
+                <%# Eval("tipo") == "1" ? "Haber" : "Debe" %>
             </ItemTemplate>
         </asp:TemplateField>
+        <asp:ButtonField ButtonType="Button" Text="Eliminar" CommandName="EliminarRegistro" />
     </Columns>
 </asp:GridView>
 </div>
     </form>
+    
 </body>
 </html>

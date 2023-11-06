@@ -135,7 +135,6 @@
             <asp:TextBox ID="TextBox2" runat="server" placeholder="Nueva descripción"></asp:TextBox>
         </div>
      <div class="btn-container">
-    <asp:Button ID="Button2" runat="server" Text="Baja" CssClass="btn btn-danger" OnClick="Button2_Click" />
     <asp:Button ID="Button3" runat="server" Text="Modificar" CssClass="btn btn-warning" OnClick="Button3_Click" />
 </div>
         <div class="message-container">

@@ -24,6 +24,36 @@ namespace clase05
         protected void DropDownList2_SelectedIndexChanged(object sender, EventArgs e)
         {
         }
+        protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "EliminarRegistro")
+            {
+                int rowIndex = Convert.ToInt32(e.CommandArgument);
+                int idRegistro = Convert.ToInt32(GridView1.DataKeys[rowIndex].Value);
+                string connectionString = ConfigurationManager.ConnectionStrings["cadena"].ConnectionString;
+
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    con.Open();
+                    string deleteQuery = "DELETE FROM RegistrosContables WHERE id = @idRegistro";
+                    using (SqlCommand cmd = new SqlCommand(deleteQuery, con))
+                    {
+                        cmd.Parameters.AddWithValue("@idRegistro", idRegistro);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Label2.Text = "Registro contable eliminado con éxito.";
+                            CargarDatos();
+                        }
+                        else
+                        {
+                            Label2.Text = "Error al eliminar el registro contable.";
+                        }
+                    }
+                }
+            }
+        }
 
         protected void ButtonCrear_Click(object sender, EventArgs e)
         {
@@ -32,98 +62,68 @@ namespace clase05
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
-                string insertQuery = "INSERT INTO RegistrosContables (idCuenta, monto, tipo) VALUES (@idCuenta, @monto, @tipo)";
-                using (SqlCommand cmd = new SqlCommand(insertQuery, con))
-                {
-                    cmd.Parameters.AddWithValue("@idCuenta", DropDownList2.SelectedValue);
-                    cmd.Parameters.AddWithValue("@monto", TextBox1.Text);
-                    cmd.Parameters.AddWithValue("@tipo", RadioButtonList1.SelectedValue);
 
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    if (rowsAffected > 0)
+                if (!string.IsNullOrEmpty(DropDownList2.SelectedValue) && !string.IsNullOrEmpty(TextBox1.Text))
+                {
+                    string insertQuery = "INSERT INTO RegistrosContables (idCuenta, monto, tipo) VALUES (@idCuenta, @monto, @tipo)";
+                    using (SqlCommand cmd = new SqlCommand(insertQuery, con))
                     {
-                        Label2.Text = "Registro contable creado con éxito.";
-                        ClearFields();
+                        cmd.Parameters.AddWithValue("@idCuenta", DropDownList2.SelectedValue);
+                        cmd.Parameters.AddWithValue("@monto", TextBox1.Text);
+                        cmd.Parameters.AddWithValue("@tipo", RadioButtonList1.SelectedValue);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Label2.Text = "Registro contable creado con éxito.";
+                            ClearFields();
+                            CargarDatos();
+                        }
+                        else
+                        {
+                            Label2.Text = "Error al crear el registro contable.";
+                        }
                     }
-                    else
-                    {
-                        Label2.Text = "Error al crear el registro contable.";
-                    }
+                }
+                else
+                {
+                    Label2.Text = "Por favor, complete todos los campos antes de crear un registro contable.";
                 }
             }
         }
 
-        protected void ButtonActualizar_Click(object sender, EventArgs e)
-        {
-            string connectionString = ConfigurationManager.ConnectionStrings["cadena"].ConnectionString;
 
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                con.Open();
-                string updateQuery = "UPDATE RegistrosContables SET monto = @monto, tipo = @tipo WHERE idCuenta = @idCuenta";
-                using (SqlCommand cmd = new SqlCommand(updateQuery, con))
-                {
-                    cmd.Parameters.AddWithValue("@idCuenta", DropDownList2.SelectedValue);
-                    cmd.Parameters.AddWithValue("@monto", TextBox1.Text);
-                    cmd.Parameters.AddWithValue("@tipo", RadioButtonList1.SelectedValue);
 
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    if (rowsAffected > 0)
-                    {
-                        Label2.Text = "Registro contable actualizado con éxito.";
-                        ClearFields();
-                    }
-                    else
-                    {
-                        Label2.Text = "Error al actualizar el registro contable.";
-                    }
-                }
-            }
-        }
-
-        protected void ButtonEliminar_Click(object sender, EventArgs e)
-        {
-            string connectionString = ConfigurationManager.ConnectionStrings["cadena"].ConnectionString;
-
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                con.Open();
-                string deleteQuery = "DELETE FROM RegistrosContables WHERE idCuenta = @idCuenta";
-                using (SqlCommand cmd = new SqlCommand(deleteQuery, con))
-                {
-                    cmd.Parameters.AddWithValue("@idCuenta", DropDownList2.SelectedValue);
-
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    if (rowsAffected > 0)
-                    {
-                        Label2.Text = "Registro contable eliminado con éxito.";
-                        ClearFields();
-                    }
-                    else
-                    {
-                        Label2.Text = "Error al eliminar el registro contable.";
-                    }
-                }
-            }
-        }
         private void CargarDatos()
         {
             using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["cadena"].ConnectionString))
             {
                 conn.Open();
-                string query = "SELECT Cuentas.id, Cuentas.descripcion, RegistrosContables.monto, RegistrosContables.tipo FROM Cuentas INNER JOIN RegistrosContables ON Cuentas.id = RegistrosContables.idCuenta";
+                string query = "SELECT RegistrosContables.id AS RegistroID, Cuentas.id AS CuentaID, Cuentas.descripcion, RegistrosContables.monto, RegistrosContables.tipo FROM Cuentas INNER JOIN RegistrosContables ON Cuentas.id = RegistrosContables.idCuenta";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
                         DataTable dt = new DataTable();
                         da.Fill(dt);
-                        GridView1.DataSource = dt;
+
+                        if (GridView1.DataSource != null)
+                        {
+                            DataTable existingData = (DataTable)GridView1.DataSource;
+                            existingData.Merge(dt);
+                            GridView1.DataSource = existingData;
+                        }
+                        else
+                        {
+                            GridView1.DataSource = dt;
+                        }
+
                         GridView1.DataBind();
                     }
                 }
             }
         }
+
         private void ClearFields()
         {
             TextBox1.Text = string.Empty;
@@ -137,11 +137,11 @@ namespace clase05
 
                 if (tipo == 1)
                 {
-                    e.Row.Cells[3].Text = "Haber";
+                    e.Row.Cells[4].Text = "Haber";
                 }
                 else
                 {
-                    e.Row.Cells[3].Text = "Debe";
+                    e.Row.Cells[4].Text = "Debe";
                 }
             }
         }

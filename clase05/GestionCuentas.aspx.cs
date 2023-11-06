@@ -49,19 +49,7 @@ namespace clase05
             }
         }
 
-        protected void Button2_Click(object sender, EventArgs e)
-        {
-            int result = SqlDataSource1.Delete();
-            if (result != 0)
-            {
-                Label1.Text = "Se ha eliminado " + result.ToString() + " registros";
-                TextBox2.Text = "";
-            }
-            else
-            {
-                Label1.Text = " No se eliminaron registros";
-            }
-        }
+      
 
         protected void Button3_Click(object sender, EventArgs e)
         {
