@@ -79,7 +79,6 @@
         color: #fff;
         font-family: 'Arial', sans-serif;
     }
-
     .btn-danger {
         background-color: #dc3545;
         color: #fff;
@@ -153,7 +152,7 @@
                 <%# Eval("tipo") == "1" ? "Haber" : "Debe" %>
             </ItemTemplate>
         </asp:TemplateField>
-        <asp:ButtonField ButtonType="Button" Text="Eliminar" CommandName="EliminarRegistro" />
+        <asp:ButtonField ButtonType="Button" Text="Eliminar" CommandName="EliminarRegistro"     ControlStyle-CssClass="btn-danger"/>
     </Columns>
 </asp:GridView>
 </div>
