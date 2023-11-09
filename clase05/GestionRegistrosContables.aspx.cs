@@ -137,11 +137,11 @@ namespace clase05
 
                 if (tipo == 1)
                 {
-                    e.Row.Cells[4].Text = "Haber";
+                    e.Row.Cells[4].Text = "1";
                 }
                 else
                 {
-                    e.Row.Cells[4].Text = "Debe";
+                    e.Row.Cells[4].Text = "0";
                 }
             }
         }

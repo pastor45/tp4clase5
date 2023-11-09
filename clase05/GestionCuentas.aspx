@@ -134,6 +134,9 @@
             <label for="TextBox2">Nueva descripción:</label>
             <asp:TextBox ID="TextBox2" runat="server" placeholder="Nueva descripción"></asp:TextBox>
         </div>
+        <div class="btn-container">
+    <asp:Button ID="Button2" runat="server" Text="Eliminar" CssClass="btn btn-danger" OnClick="Button2_Click" />
+</div>
      <div class="btn-container">
     <asp:Button ID="Button3" runat="server" Text="Modificar" CssClass="btn btn-warning" OnClick="Button3_Click" />
 </div>
