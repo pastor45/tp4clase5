@@ -14,7 +14,7 @@ namespace CuentasContablesTp3
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if(!IsPostBack) //se va a ejecutar cuando se carga por primera vez la pagina
+            if(!IsPostBack) 
             {
                 actualizarLabel();
             }

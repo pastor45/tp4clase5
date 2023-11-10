@@ -36,7 +36,6 @@ namespace CuentasContablesTp3
                         DropDownList1.DataBind();
                     }
                 }
-                // Agrega un elemento vacío si lo deseas
                 DropDownList1.Items.Insert(0, new ListItem("Seleccione una cuenta", string.Empty));
             }
         }
@@ -66,7 +65,7 @@ namespace CuentasContablesTp3
             {
                 int idCuenta = Convert.ToInt32(DropDownList1.SelectedValue);
                 int monto = Convert.ToInt32(TextBox1.Text);
-                bool tipo = Convert.ToInt32(RadioButtonListTipo.SelectedValue) == 1; // 1 representa "Haber", 0 representa "Debe"
+                bool tipo = Convert.ToInt32(RadioButtonListTipo.SelectedValue) == 1;
 
                 using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["cadena"].ConnectionString))
                 {
