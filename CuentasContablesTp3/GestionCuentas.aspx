@@ -6,86 +6,58 @@
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Gestión de Cuentas</title>
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        form {
-            max-width: 800px;
-            margin: 20px auto;
             padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        #HyperLink1 {
-            text-decoration: none;
-            color: #3498db;
-            font-weight: bold;
+        .container {
+            max-width: 600px;
         }
 
-        #TextBox1,
-        #TextBox2 {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            box-sizing: border-box;
-        }
-
-        #Button1,
-        #Button2,
-        #Button3 {
-            background-color: #2ecc71;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-        }
-
-        #Label1,
-        #Label2 {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        #ListBox1 {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        #ListBox1 option {
-            padding: 8px;
+        .margin-bottom {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <form id="form1" runat="server">
-        <div>
+        <div class="container">
+            <h2>Gestión de Cuentas</h2>
 
-            <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Index.aspx">Inicio</asp:HyperLink>
-            <br />
-            <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-            <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Alta" />
-            <asp:Label ID="Label1" runat="server"></asp:Label>
-            <br />
-            <br />
-            <asp:Label ID="Label2" runat="server"></asp:Label>
-            <br />
-            <br />
-            <asp:ListBox ID="ListBox1" runat="server" AutoPostBack="True" DataSourceID="SqlDataSource1" DataTextField="descripcion" DataValueField="id" Height="107px" OnSelectedIndexChanged="ListBox1_SelectedIndexChanged"></asp:ListBox>
-            <br />
-            <br />
-            <asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
-            <asp:Button ID="Button2" runat="server" OnClick="Button2_Click" Text="Eliminar" />
-            <asp:Button ID="Button3" runat="server" OnClick="Button3_Click" Text="Modificar" />
-            <br />
+            <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Index.aspx" CssClass="btn btn-primary">Inicio</asp:HyperLink>
+            <hr />
+
+            <div class="form-group">
+                <label for="TextBox1">Nueva Cuenta:</label>
+                <asp:TextBox ID="TextBox1" runat="server" CssClass="form-control"></asp:TextBox>
+            </div>
+
+            <div class="form-group">
+                <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Alta" CssClass="btn btn-success" />
+                <asp:Label ID="Label1" runat="server" CssClass="text-success"></asp:Label>
+            </div>
+
+            <div class="form-group">
+                <asp:Label ID="Label2" runat="server"></asp:Label>
+            </div>
+
+            <div class="form-group">
+                <label for="ListBox1">Cuentas:</label>
+                <asp:ListBox ID="ListBox1" runat="server" AutoPostBack="True" DataSourceID="SqlDataSource1" DataTextField="descripcion" DataValueField="id" CssClass="form-control" Height="107px" OnSelectedIndexChanged="ListBox1_SelectedIndexChanged"></asp:ListBox>
+            </div>
+
+            <div class="form-group">
+                <label for="TextBox2">Modificar Cuenta:</label>
+                <asp:TextBox ID="TextBox2" runat="server" CssClass="form-control"></asp:TextBox>
+            </div>
+
+            <div class="form-group">
+                <asp:Button ID="Button2" runat="server" OnClick="Button2_Click" Text="Eliminar" CssClass="btn btn-danger margin-bottom" />
+                <asp:Button ID="Button3" runat="server" OnClick="Button3_Click" Text="Modificar" CssClass="btn btn-warning margin-bottom" />
+            </div>
+
             <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:cadena %>" DeleteCommand="DELETE FROM [Cuentas] WHERE [id] = @id" InsertCommand="INSERT INTO [Cuentas] ([descripcion]) VALUES (@descripcion)" SelectCommand="SELECT * FROM [Cuentas]" UpdateCommand="UPDATE [Cuentas] SET [descripcion] = @descripcion WHERE [id] = @id">
                 <DeleteParameters>
                     <asp:ControlParameter ControlID="ListBox1" Name="id" PropertyName="SelectedValue" Type="Int32" />
@@ -104,9 +76,11 @@
                     <asp:ControlParameter ControlID="ListBox1" Name="id" PropertyName="SelectedValue" Type="Int32" />
                 </SelectParameters>
             </asp:SqlDataSource>
-            <br />
-
         </div>
     </form>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>

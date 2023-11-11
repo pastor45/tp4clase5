@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Configuration;
+using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace CuentasContablesTp3
@@ -10,160 +12,135 @@ namespace CuentasContablesTp3
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+            if(!IsPostBack)
             {
-                CargarDatos();
-                CargarCuentasEnDropDownList();
-
-            }
-        }
-        private void CargarCuentasEnDropDownList()
-        {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["cadena"].ConnectionString))
-            {
-                conn.Open();
-                string query = "SELECT id, descripcion FROM Cuentas";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                    {
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
-
-                        DropDownList1.DataSource = dt;
-                        DropDownList1.DataTextField = "descripcion";
-                        DropDownList1.DataValueField = "id";
-                        DropDownList1.DataBind();
-                    }
-                }
-                DropDownList1.Items.Insert(0, new ListItem("Seleccione una cuenta", string.Empty));
-            }
-        }
-        private void CargarDatos()
-        {
-            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["cadena"].ConnectionString))
-            {
-                conn.Open();
-                string query = "SELECT RegistrosContables.id AS RegistroID, Cuentas.id AS CuentaID, Cuentas.descripcion, RegistrosContables.monto, RegistrosContables.tipo FROM Cuentas INNER JOIN RegistrosContables ON Cuentas.id = RegistrosContables.idCuenta";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                    {
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
-
-                        GridView1.DataSource = dt;
-                        GridView1.DataBind();
-                    }
-                }
+                completarTabla();
             }
         }
 
-        protected void btnAgregarRegistro_Click(object sender, EventArgs e)
+        protected void completarTabla()
         {
             try
             {
-                int idCuenta = Convert.ToInt32(DropDownList1.SelectedValue);
-                int monto = Convert.ToInt32(TextBox1.Text);
-                bool tipo = Convert.ToInt32(RadioButtonListTipo.SelectedValue) == 1;
+                DataView dv = (DataView)SqlDataSource3.Select(DataSourceSelectArguments.Empty);
 
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["cadena"].ConnectionString))
+                if (dv != null && dv.Count > 0)
                 {
-                    con.Open();
-                    string query = "INSERT INTO [RegistrosContables] (idCuenta, monto, tipo) VALUES (@idCuenta, @monto, @tipo)";
-                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    // Rellenar cabecera
+                    TableRow headerRow = new TableRow();
+
+                    TableCell headerCell1 = new TableCell();
+                    headerCell1.Text = "ID";
+                    headerRow.Cells.Add(headerCell1);
+
+                    TableCell headerCell2 = new TableCell();
+                    headerCell2.Text = "Cuenta";
+                    headerRow.Cells.Add(headerCell2);
+
+                    TableCell headerCell3 = new TableCell();
+                    headerCell3.Text = "Monto";
+                    headerRow.Cells.Add(headerCell3);
+
+                    TableCell headerCell4 = new TableCell();
+                    headerCell4.Text = "Tipo";
+                    headerRow.Cells.Add(headerCell4);
+
+                    Table1.Rows.Add(headerRow);
+
+                    // Rellenar las filas
+                    foreach (DataRowView rowView in dv)
                     {
-                        cmd.Parameters.AddWithValue("@idCuenta", idCuenta);
-                        cmd.Parameters.AddWithValue("@monto", monto);
-                        cmd.Parameters.AddWithValue("@tipo", tipo);
-                        cmd.ExecuteNonQuery();
+                        DataRow row = rowView.Row;
+                        TableRow tableRow = new TableRow();
+
+                        // Agregar la nueva celda para el ID
+                        TableCell cell0 = new TableCell();
+                        cell0.Text = row["id"].ToString();
+                        tableRow.Cells.Add(cell0);
+
+                        TableCell cell1 = new TableCell();
+                        cell1.Text = row["descripcion"].ToString();
+                        tableRow.Cells.Add(cell1);
+
+                        TableCell cell2 = new TableCell();
+                        cell2.Text = row["monto"].ToString();
+                        tableRow.Cells.Add(cell2);
+
+                        TableCell cell3 = new TableCell();
+                        cell3.Text = row["tipo"].ToString();
+                        tableRow.Cells.Add(cell3);
+
+                        Table1.Rows.Add(tableRow);
                     }
                 }
-
-                CargarDatos();
             }
             catch (Exception ex)
             {
-                Response.Write("Error: " + ex.Message);
+                ClientScript.RegisterStartupScript(this.GetType(), "AlertScript", $"alert('Error');", true);
             }
         }
 
-
-        protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
+        protected void Button1_Click(object sender, EventArgs e)
         {
-            GridView1.EditIndex = e.NewEditIndex;
-            CargarDatos();
+            int result = SqlDataSource2.Insert();
+            if(result > 0)
+            {
+                Label1.Text = "Se agrego " + result.ToString() + " registro";
+                completarTabla();
+                TextBox1.Text = string.Empty;
+            }
+            else
+            {
+                Label1.Text = "No se agregaron registros";
+            }
         }
 
-        protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        protected void Button3_Click(object sender, EventArgs e)
         {
-            try
+            int result = SqlDataSource2.Delete();
+            if (result > 0)
             {
-                int registroID = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Value);
+                Label1.Text = "Se elimino " + result.ToString() + " registro";
+                completarTabla();
+                TextBox1.Text = string.Empty;
+            }
+            else
+            {
+                Label1.Text = "No se eliminaron registros";
+            }
+        }
 
-                DropDownList ddlEditCuenta = (DropDownList)GridView1.Rows[e.RowIndex].FindControl("ddlEditCuenta");
-                int idCuenta = Convert.ToInt32(ddlEditCuenta.SelectedValue);
+        protected void DropDownList3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DataView dv = (DataView)SqlDataSource4.Select(DataSourceSelectArguments.Empty);
+            if(dv != null && dv.Count > 0)
+            {
+                DataRowView row = dv[0];
+                TextBox1.Text = row["monto"].ToString();
+                DropDownList1.SelectedValue = row["idCuenta"].ToString();
 
-                TextBox txtEditMonto = (TextBox)GridView1.Rows[e.RowIndex].FindControl("txtEditMonto");
-                int monto = Convert.ToInt32(txtEditMonto.Text);
-
-                RadioButton rbEditIngreso = (RadioButton)GridView1.Rows[e.RowIndex].FindControl("rbEditIngreso");
-                bool tipo = rbEditIngreso.Checked;
-
-                byte tipoBit = tipo ? (byte)1 : (byte)0;
-
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["cadena"].ConnectionString))
+                //verificar si el valor existe en DropDownList2 antes de asignarlo
+                string tipoValue = row["tipo"].ToString();
+                if (DropDownList2.Items.FindByValue(tipoValue) != null)
                 {
-                    con.Open();
-                    string query = "UPDATE [RegistrosContables] SET idCuenta = @idCuenta, monto = @monto, tipo = @tipo WHERE id = @id";
-                    using (SqlCommand cmd = new SqlCommand(query, con))
-                    {
-                        cmd.Parameters.AddWithValue("@id", registroID);
-                        cmd.Parameters.AddWithValue("@idCuenta", idCuenta);
-                        cmd.Parameters.AddWithValue("@monto", monto);
-                        cmd.Parameters.AddWithValue("@tipo", tipoBit); 
-                        cmd.ExecuteNonQuery();
-                    }
+                    DropDownList2.SelectedValue = tipoValue;
                 }
-
-                GridView1.EditIndex = -1;
-                CargarDatos();
             }
-            catch (Exception ex)
-            {
-                Response.Write("Error: " + ex.Message);
-            }
+            completarTabla();  
         }
 
-
-        protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        protected void Button2_Click(object sender, EventArgs e)
         {
-            GridView1.EditIndex = -1;
-            CargarDatos();
-        }
-
-        protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-            try
+            int result = SqlDataSource2.Update();
+            if (result > 0)
             {
-                int id = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Value);
-
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["cadena"].ConnectionString))
-                {
-                    con.Open();
-                    string query = "DELETE FROM [RegistrosContables] WHERE id = @id";
-                    using (SqlCommand cmd = new SqlCommand(query, con))
-                    {
-                        cmd.Parameters.AddWithValue("@id", id);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                CargarDatos();
+                Label1.Text = "Se Actualizo " + result.ToString() + " registro";
+                completarTabla();
+                TextBox1.Text = string.Empty;
             }
-            catch (Exception ex)
+            else
             {
-                Response.Write("Error: " + ex.Message);
+                Label1.Text = "No se actualizaron registros";
             }
         }
     }

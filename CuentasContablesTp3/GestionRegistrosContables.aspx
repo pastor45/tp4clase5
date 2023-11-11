@@ -6,146 +6,89 @@
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Gestión de Registros Contables</title>
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        form {
-            max-width: 800px;
-            margin: 20px auto;
             padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        #HyperLink1 {
-            text-decoration: none;
-            color: #3498db;
-            font-weight: bold;
+        .container {
+            max-width: 800px;
         }
 
-        #DropDownList1,
-        #TextBox1 {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            box-sizing: border-box;
-        }
-
-        #btnAgregarRegistro {
-            background-color: #2ecc71;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-        }
-
-        #GridView1 {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-
-        #GridView1 th,
-        #GridView1 td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-
-        #GridView1 th {
-            background-color: #3498db;
-            color: #fff;
-        }
-
-        #GridView1 tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        #GridView1 tr:hover {
-            background-color: #e0e0e0;
-        }
-
-        #GridView1 input[type="text"] {
-            width: 80px;
-            padding: 5px;
-            box-sizing: border-box;
-        }
-
-        #GridView1 input[type="radio"] {
-            margin-right: 5px;
+        .margin-bottom {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <form id="form1" runat="server">
-        <div>
-            <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Index.aspx">Menu</asp:HyperLink>
-            <br />
-<asp:DropDownList ID="DropDownList1" runat="server" AppendDataBoundItems="True">
-</asp:DropDownList>
+        <div class="container">
+            <h2>Gestión de Registros Contables</h2>
 
-<asp:TextBox ID="TextBox1" runat="server" Placeholder="Monto"></asp:TextBox>
-            <br />
-            <asp:RadioButtonList ID="RadioButtonListTipo" runat="server">
-                <asp:ListItem Text="Debe" Value="0" />
-                <asp:ListItem Text="Haber" Value="1" />
-            </asp:RadioButtonList>
-            <br />
-            <asp:Button ID="btnAgregarRegistro" runat="server" Text="Agregar Registro" OnClick="btnAgregarRegistro_Click" />
-            <br />
-            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataKeyNames="RegistroID"
-    OnRowEditing="GridView1_RowEditing" OnRowCancelingEdit="GridView1_RowCancelingEdit"
-    OnRowUpdating="GridView1_RowUpdating" OnRowDeleting="GridView1_RowDeleting">
-    <Columns>
-        <asp:BoundField DataField="RegistroID" HeaderText="ID" ReadOnly="True" SortExpression="RegistroID" />
-        <asp:TemplateField HeaderText="Cuenta">
-            <ItemTemplate>
-                <%# Eval("descripcion") %>
-            </ItemTemplate>
-            <EditItemTemplate>
-                <asp:DropDownList ID="ddlEditCuenta" runat="server" DataSourceID="SqlDataSourceCuentas"
-                    DataTextField="descripcion" DataValueField="id" SelectedValue='<%# Bind("CuentaID") %>'></asp:DropDownList>
-            </EditItemTemplate>
-        </asp:TemplateField>
-        <asp:TemplateField HeaderText="Monto">
-            <ItemTemplate>
-                <asp:Label ID="lblMonto" runat="server" Text='<%# Eval("monto") %>'></asp:Label>
-            </ItemTemplate>
-            <EditItemTemplate>
-                <asp:TextBox ID="txtEditMonto" runat="server" Text='<%# Bind("monto") %>'></asp:TextBox>
-            </EditItemTemplate>
-        </asp:TemplateField>
-     <asp:TemplateField HeaderText="Tipo">
-    <ItemTemplate>
-        <%# Convert.ToBoolean(Eval("tipo")) ? "Haber" : "Debe" %>
-    </ItemTemplate>
-    <EditItemTemplate>
-        <asp:RadioButton ID="rbEditIngreso" runat="server" Text="Haber" GroupName="Tipo"
-            Checked='<%# Convert.ToBoolean(Eval("tipo")) %>' />
-        <asp:RadioButton ID="rbEditEgreso" runat="server" Text="Debe" GroupName="Tipo"
-            Checked='<%# !Convert.ToBoolean(Eval("tipo")) %>' />
-    </EditItemTemplate>
-</asp:TemplateField>
-<asp:TemplateField HeaderText="Acciones">
-    <ItemTemplate>
-        <asp:LinkButton ID="lnkEdit" runat="server" CommandName="Edit" Text="Editar" />
-        <asp:LinkButton ID="lnkDelete" runat="server" CommandName="Delete" Text="Eliminar" />
-    </ItemTemplate>
-    <EditItemTemplate>
-        <asp:LinkButton ID="lnkUpdate" runat="server" CommandName="Update" Text="Actualizar" />
-        <asp:LinkButton ID="lnkCancel" runat="server" CommandName="Cancel" Text="Cancelar" />
-    </EditItemTemplate>
-</asp:TemplateField>    </Columns>
-</asp:GridView>
-            <asp:SqlDataSource ID="SqlDataSourceCuentas" runat="server" ConnectionString="<%$ ConnectionStrings:cadena %>"
-                SelectCommand="SELECT id, descripcion FROM Cuentas"></asp:SqlDataSource>
+            <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Index.aspx" CssClass="btn btn-primary">Menu</asp:HyperLink>
+            <hr />
+
+            <div class="form-group">
+                <asp:DropDownList ID="DropDownList1" runat="server" CssClass="form-control" DataSourceID="SqlDataSource1" DataTextField="descripcion" DataValueField="id" Width="100%">
+                </asp:DropDownList>
+            </div>
+
+            <div class="form-group">
+                <asp:TextBox ID="TextBox1" placeholder="Monto" ToolTip="Monto" runat="server" CssClass="form-control" TextMode="Number"></asp:TextBox>
+            </div>
+
+            <div class="form-group">
+                <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Alta" CssClass="btn btn-success" />
+                <asp:Button ID="Button2" runat="server" Text="Modificar" OnClick="Button2_Click" CssClass="btn btn-warning" />
+                <asp:Label ID="Label1" runat="server" CssClass="text-success"></asp:Label>
+            </div>
+
+            <div class="form-group">
+                <asp:DropDownList ID="DropDownList2" runat="server" CssClass="form-control">
+                    <asp:ListItem Value="False">Debe</asp:ListItem>
+                    <asp:ListItem Value="True">Haber</asp:ListItem>
+                </asp:DropDownList>
+            </div>
+
+            <div class="form-group">
+                <asp:DropDownList ID="DropDownList3" runat="server" CssClass="form-control" AutoPostBack="True" DataSourceID="SqlDataSource2" DataTextField="id" DataValueField="id" OnSelectedIndexChanged="DropDownList3_SelectedIndexChanged">
+                </asp:DropDownList>
+                <asp:Button ID="Button3" runat="server" Text="Borrar" OnClick="Button3_Click" CssClass="btn btn-danger margin-bottom" />
+            </div>
+
+            <asp:Table ID="Table1" runat="server" CssClass="table table-striped" Width="100%">
+            </asp:Table>
         </div>
+
+        <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:cadena %>" SelectCommand="SELECT * FROM [Cuentas]"></asp:SqlDataSource>
+        <asp:SqlDataSource ID="SqlDataSource2" runat="server" ConnectionString="<%$ ConnectionStrings:cadena %>" DeleteCommand="DELETE FROM [RegistrosContables] WHERE [id] = @id" InsertCommand="INSERT INTO [RegistrosContables] ([idCuenta], [monto], [tipo]) VALUES (@idCuenta, @monto, @tipo)" SelectCommand="SELECT RegistrosContables.id, RegistrosContables.idCuenta, RegistrosContables.monto, RegistrosContables.tipo, Cuentas.descripcion FROM RegistrosContables INNER JOIN Cuentas ON RegistrosContables.idCuenta = Cuentas.id" UpdateCommand="UPDATE [RegistrosContables] SET [idCuenta] = @idCuenta, [monto] = @monto, [tipo] = @tipo WHERE [id] = @id">
+            <DeleteParameters>
+                <asp:ControlParameter ControlID="DropDownList3" Name="id" PropertyName="SelectedValue" Type="Int32" />
+            </DeleteParameters>
+            <InsertParameters>
+                <asp:ControlParameter ControlID="DropDownList1" Name="idCuenta" PropertyName="SelectedValue" Type="Int32" />
+                <asp:ControlParameter ControlID="TextBox1" Name="monto" PropertyName="Text" Type="Int32" />
+                <asp:ControlParameter ControlID="DropDownList2" Name="tipo" PropertyName="SelectedValue" Type="Boolean" />
+            </InsertParameters>
+            <UpdateParameters>
+                <asp:ControlParameter ControlID="DropDownList1" Name="idCuenta" PropertyName="SelectedValue" Type="Int32" />
+                <asp:ControlParameter ControlID="TextBox1" Name="monto" PropertyName="Text" Type="Int32" />
+                <asp:ControlParameter ControlID="DropDownList2" Name="tipo" PropertyName="SelectedValue" Type="Boolean" />
+                <asp:ControlParameter ControlID="DropDownList3" Name="id" PropertyName="SelectedValue" Type="Int32" />
+            </UpdateParameters>
+        </asp:SqlDataSource>
+
+        <asp:SqlDataSource ID="SqlDataSource3" runat="server" ConnectionString="<%$ ConnectionStrings:cadena %>" SelectCommand="SELECT RegistrosContables.id, Cuentas.descripcion, RegistrosContables.monto, RegistrosContables.tipo FROM RegistrosContables INNER JOIN Cuentas ON RegistrosContables.idCuenta = Cuentas.id"></asp:SqlDataSource>
+
+        <asp:SqlDataSource ID="SqlDataSource4" runat="server" ConnectionString="<%$ ConnectionStrings:cadena %>" SelectCommand="SELECT * FROM [RegistrosContables] WHERE ([id] = @id)">
+            <SelectParameters>
+                <asp:ControlParameter ControlID="DropDownList3" Name="id" PropertyName="SelectedValue" Type="Int32" />
+            </SelectParameters>
+        </asp:SqlDataSource>
     </form>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
